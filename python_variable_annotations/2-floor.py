@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-"""Module that defines a type-annotated function to return the floor of a float."""
+"""Module that provides a function to compute the floor of a float."""
+
 
 import math
 
 
 def floor(n: float) -> int:
-    """Return the floor of a floating-point number.
+    """
+    Returns the floor of the given float.
 
     Args:
-        n (float): The number to floor.
+        n (float): The float number to floor.
 
     Returns:
-        int: The floor value of n.
+        int: The floor of the float as an integer.
     """
     return math.floor(n)
