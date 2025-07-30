@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
-"""Module that defines a function returning a list of tuples with elements and their lengths."""
+"""Module to return list of tuples with element and its length."""
 
-from typing import Iterable, List, Tuple, Sequence
+
+from typing import Iterable, Sequence, List, Tuple
 
 
 def element_length(lst: Iterable[Sequence]) -> List[Tuple[Sequence, int]]:
-    """Return a list of tuples where each tuple contains an element from lst and its length.
+    """
+    Takes an iterable of sequences and returns a list of tuples
+    where each tuple contains the element and its length.
 
     Args:
-        lst (Iterable[Sequence]): An iterable of sequences (like strings, lists, etc.).
+        lst (Iterable[Sequence]): An iterable of sequences
+            (like strings, lists, etc.)
 
     Returns:
-        List[Tuple[Sequence, int]]: List of tuples with element and its length.
+        List[Tuple[Sequence, int]]: List of tuples (element, length
+        of element).
     """
     return [(i, len(i)) for i in lst]
