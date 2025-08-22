@@ -5,27 +5,21 @@ export default class Car {
     this._color = color;
   }
 
-  // Symbol pour la méthode cloneCar
-  static [Symbol.hasInstance](instance) {
-    return instance instanceof this;
-  }
-
   cloneCar() {
     // Crée une nouvelle instance de la même classe
-    return new this.constructor(this._brand, this._motor, this._color);
+    const Cls = this.constructor;
+    const clone = Object.create(Cls.prototype);
+
+    // Copie tous les attributs propres de l'instance
+    Object.getOwnPropertyNames(this).forEach(prop => {
+      clone[prop] = this[prop];
+    });
+
+    return clone;
   }
 
-  // Getters optionnels si besoin
-  get brand() {
-    return this._brand;
-  }
-
-  get motor() {
-    return this._motor;
-  }
-
-  get color() {
-    return this._color;
-  }
+  // Getters
+  get brand() { return this._brand; }
+  get motor() { return this._motor; }
+  get color() { return this._color; }
 }
-
