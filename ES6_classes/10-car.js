@@ -28,3 +28,4 @@ export default class Car {
     return this._color;
   }
 }
+

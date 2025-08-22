@@ -26,3 +26,4 @@ export default class Airport {
     return `[object ${this._code}]`;
   }
 }
+
