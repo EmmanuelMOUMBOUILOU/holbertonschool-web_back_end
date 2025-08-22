@@ -1,4 +1,4 @@
-// Export des classes
+// Déclaration des classes d'abord
 export class HolbertonClass {
   constructor(year, location) {
     if (typeof year !== 'number') throw new TypeError('Year must be a number');
@@ -21,7 +21,7 @@ export class StudentHolberton {
   constructor(firstName, lastName, holbertonClass) {
     if (typeof firstName !== 'string') throw new TypeError('First name must be a string');
     if (typeof lastName !== 'string') throw new TypeError('Last name must be a string');
-    if (!(holbertonClass instanceof HolbertonClass)) throw new TypeError('holbertonClass must be an instance of HolbertonClass');
+    if (!(holbertonClass instanceof HolbertonClass)) throw new TypeError('holbertonClass must be a HolbertonClass instance');
 
     this._firstName = firstName;
     this._lastName = lastName;
@@ -41,17 +41,14 @@ export class StudentHolberton {
   }
 }
 
-// Créer les instances de HolbertonClass avant les étudiants
+// Créer les instances après les classes
 const class2019 = new HolbertonClass(2019, 'San Francisco');
 const class2020 = new HolbertonClass(2020, 'San Francisco');
 
-// Créer les étudiants
 const student1 = new StudentHolberton('Guillaume', 'Salva', class2020);
 const student2 = new StudentHolberton('John', 'Doe', class2020);
 const student3 = new StudentHolberton('Albert', 'Clinton', class2019);
 const student4 = new StudentHolberton('Donald', 'Bush', class2019);
 const student5 = new StudentHolberton('Jason', 'Sandler', class2019);
 
-// Exporter la liste
 export const listOfStudents = [student1, student2, student3, student4, student5];
-
