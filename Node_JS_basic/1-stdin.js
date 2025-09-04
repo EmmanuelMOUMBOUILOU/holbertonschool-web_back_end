@@ -1,11 +1,14 @@
+
 process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
+process.stdin.setEncoding('utf8');
+
 process.stdin.on('data', (data) => {
-  const name = data.toString().trim();
-  console.log(`Your name is: ${name}`);
-  if (!process.stdin.isTTY) process.exit();
+  const name = data.trim();
+  process.stdout.write(`Your name is: ${name}\n`);
 });
 
-process.on('exit', () => {
-  console.log('This important software is now closing');
+// When the input stream ends (e.g., piped input or Ctrl+D), this runs
+process.stdin.on('end', () => {
+  process.stdout.write('This important software is now closing\n');
 });
