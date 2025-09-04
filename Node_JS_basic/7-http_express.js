@@ -15,8 +15,9 @@ function countStudents(path) {
       const fields = {};
       students.forEach((line) => {
         const [firstname,, , field] = line.split(',');
-        if (!fields[field]) fields[field] = [];
-        fields[field].push(firstname);
+        const fieldName = field.trim();
+        if (!fields[fieldName]) fields[fieldName] = [];
+        fields[fieldName].push(firstname.trim());
       });
 
       resolve({ total: students.length, fields });
@@ -33,7 +34,8 @@ app.get('/students', async (req, res) => {
   try {
     const { total, fields } = await countStudents(database);
     output += `Number of students: ${total}\n`;
-    for (const [field, names] of Object.entries(fields)) {
+    for (const field of Object.keys(fields).sort()) {
+      const names = fields[field];
       output += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
     }
     res.send(output.trim());
