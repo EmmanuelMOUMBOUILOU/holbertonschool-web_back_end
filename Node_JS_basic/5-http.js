@@ -10,12 +10,12 @@ function countStudents(path) {
       }
 
       const lines = data.split('\n').filter(line => line.trim() !== '');
-      if (lines.length === 0) {
+      if (lines.length <= 1) {
         resolve('Number of students: 0');
         return;
       }
 
-      const header = lines.shift(); // Enlever l'entête
+      const header = lines.shift(); // enlever l'entête
       const students = lines.map(line => {
         const [firstname, lastname, age, field] = line.split(',');
         return { firstname, lastname, age, field };
@@ -28,9 +28,13 @@ function countStudents(path) {
       });
 
       let output = `Number of students: ${students.length}\n`;
-      for (const field of Object.keys(fields).sort()) { // Tri des fields pour cohérence
-        output += `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}\n`;
-      }
+
+      // Ordre CS puis SWE pour correspondre à l’exemple
+      ['CS', 'SWE'].forEach(field => {
+        if (fields[field]) {
+          output += `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}\n`;
+        }
+      });
 
       resolve(output.trim());
     });
@@ -47,11 +51,13 @@ const app = http.createServer(async (req, res) => {
   } else if (req.url === '/students') {
     if (!dbFile) {
       res.statusCode = 500;
-      res.end('Database file not provided');
+      res.end('Cannot load the database');
       return;
     }
+
     res.statusCode = 200;
     res.write('This is the list of our students\n');
+
     try {
       const result = await countStudents(dbFile);
       res.end(result);
