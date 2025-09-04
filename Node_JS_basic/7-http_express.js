@@ -1,26 +1,38 @@
 const express = require('express');
 const fs = require('fs');
 
+const databaseFile = process.argv[2];
+
 const app = express();
-const database = process.argv[2];
 
 function countStudents(path) {
   return new Promise((resolve, reject) => {
     fs.readFile(path, 'utf8', (err, data) => {
-      if (err) return reject(new Error('Cannot load the database'));
-
+      if (err) {
+        reject(new Error('Cannot load the database'));
+        return;
+      }
       const lines = data.split('\n').filter(line => line.trim() !== '');
-      const students = lines.slice(1); // enlever l'en-tête
+      if (lines.length <= 1) { // juste l'en-tête
+        resolve('Number of students: 0');
+        return;
+      }
+
+      const students = lines.slice(1).map(line => line.split(','));
+      const total = students.length;
 
       const fields = {};
-      students.forEach((line) => {
-        const [firstname,, , field] = line.split(',');
-        const fieldName = field.trim();
-        if (!fields[fieldName]) fields[fieldName] = [];
-        fields[fieldName].push(firstname.trim());
+      students.forEach(([firstname, , , field]) => {
+        if (!fields[field]) fields[field] = [];
+        fields[field].push(firstname);
       });
 
-      resolve({ total: students.length, fields });
+      let output = `Number of students: ${total}\n`;
+      Object.keys(fields).forEach(field => {
+        output += `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}\n`;
+      });
+
+      resolve(output.trim());
     });
   });
 }
@@ -32,16 +44,12 @@ app.get('/', (req, res) => {
 app.get('/students', async (req, res) => {
   let output = 'This is the list of our students\n';
   try {
-    const { total, fields } = await countStudents(database);
-    output += `Number of students: ${total}\n`;
-    for (const field of Object.keys(fields).sort()) {
-      const names = fields[field];
-      output += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
-    }
-    res.send(output.trim());
+    const studentsInfo = await countStudents(databaseFile);
+    output += studentsInfo;
   } catch (err) {
-    res.send(err.message);
+    output += err.message;
   }
+  res.send(output);
 });
 
 app.listen(1245);
