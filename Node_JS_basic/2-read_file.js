@@ -8,29 +8,29 @@ function countStudents(path) {
     throw new Error('Cannot load the database');
   }
 
-  // Découper le contenu en lignes et ignorer les lignes vides
   const lines = data.split('\n').filter(line => line.trim() !== '');
+  if (lines.length === 0) {
+    console.log('Number of students: 0');
+    return;
+  }
 
-  // Retirer l'en-tête
-  const students = lines.slice(1);
-
+  const students = lines.slice(1); // enlever l'en-tête
   console.log(`Number of students: ${students.length}`);
 
-  // Regrouper par domaine
   const fields = {};
   students.forEach(student => {
-    const parts = student.split(',');
-    const firstname = parts[0].trim();
-    const field = parts[3].trim();
-
+    const [firstname, , , field] = student.split(',');
     if (!fields[field]) fields[field] = [];
     fields[field].push(firstname);
   });
 
-  // Afficher le résultat par domaine
-  for (const field in fields) {
-    console.log(`Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`);
-  }
+  Object.keys(fields)
+    .sort() // optionnel, pour l’ordre stable
+    .forEach(field => {
+      console.log(
+        `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`
+      );
+    });
 }
 
 module.exports = countStudents;
