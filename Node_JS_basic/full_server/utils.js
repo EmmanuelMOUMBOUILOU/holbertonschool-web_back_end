@@ -5,7 +5,7 @@ export function readDatabase(path) {
     fs.readFile(path, 'utf8', (err, data) => {
       if (err) return reject(new Error('Cannot load the database'));
 
-      const lines = data.split('\n').filter(line => line.trim() !== '');
+      const lines = data.split('\n').filter((line) => line.trim() !== '');
       const students = lines.slice(1); // enlever l'en-tête
 
       const fields = {};

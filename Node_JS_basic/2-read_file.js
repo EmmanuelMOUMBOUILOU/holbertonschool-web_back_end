@@ -9,7 +9,7 @@ function countStudents(path) {
   }
 
   // Découper en lignes et enlever les lignes vides
-  const lines = data.split('\n').filter(line => line.trim() !== '');
+  const lines = data.split('\n').filter((line) => line.trim() !== '');
   if (lines.length === 0) {
     console.log('Number of students: 0');
     return;
@@ -35,7 +35,7 @@ function countStudents(path) {
   // Afficher le nombre d'étudiants et la liste par domaine
   Object.keys(fields).forEach((field) => {
     console.log(
-      `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`
+      `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}`,
     );
   });
 }

@@ -9,20 +9,22 @@ function countStudents(path) {
         return;
       }
 
-      const lines = data.split('\n').filter(line => line.trim() !== '');
+      const lines = data.split('\n').filter((line) => line.trim() !== '');
       if (lines.length <= 1) {
         resolve('Number of students: 0');
         return;
       }
 
       const header = lines.shift(); // enlever l'entête
-      const students = lines.map(line => {
+      const students = lines.map((line) => {
         const [firstname, lastname, age, field] = line.split(',');
-        return { firstname, lastname, age, field };
+        return {
+          firstname, lastname, age, field,
+        };
       });
 
       const fields = {};
-      students.forEach(student => {
+      students.forEach((student) => {
         if (!fields[student.field]) fields[student.field] = [];
         fields[student.field].push(student.firstname);
       });
@@ -30,7 +32,7 @@ function countStudents(path) {
       let output = `Number of students: ${students.length}\n`;
 
       // Ordre CS puis SWE pour correspondre à l’exemple
-      ['CS', 'SWE'].forEach(field => {
+      ['CS', 'SWE'].forEach((field) => {
         if (fields[field]) {
           output += `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}\n`;
         }
