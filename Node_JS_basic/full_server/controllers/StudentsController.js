@@ -1,4 +1,4 @@
-import { readDatabase } from '../utils.js';
+import readDatabase from '../utils'; // suppression de .js
 
 export default class StudentsController {
   static async getAllStudents(req, res) {
@@ -6,17 +6,20 @@ export default class StudentsController {
     try {
       const fields = await readDatabase(database);
       let output = 'This is the list of our students\n';
-      const sortedFields = Object.keys(fields).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+      const sortedFields = Object.keys(fields)
+        .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
       let total = 0;
       for (const field of sortedFields) {
         const names = fields[field];
         total += names.length;
-        output += `Number of students in ${field}: ${names.length}. List: ${names.join(', ')}\n`;
+        output += `Number of students in ${field}: ${names.length}. `
+          + `List: ${names.join(', ')}\n`; // ligne coupée pour max-len
       }
       output = `Number of students: ${total}\n${output}`;
-      res.status(200).send(output.trim());
+      return res.status(200).send(output.trim()); // ajout return
     } catch (err) {
-      res.status(500).send(err.message);
+      return res.status(500).send(err.message); // ajout return
     }
   }
 
@@ -29,9 +32,9 @@ export default class StudentsController {
     try {
       const fields = await readDatabase(database);
       const names = fields[major] || [];
-      res.status(200).send(`List: ${names.join(', ')}`);
+      return res.status(200).send(`List: ${names.join(', ')}`); // ajout return
     } catch (err) {
-      res.status(500).send(err.message);
+      return res.status(500).send(err.message); // ajout return
     }
   }
 }
