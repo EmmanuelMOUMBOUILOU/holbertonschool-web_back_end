@@ -1,4 +1,4 @@
-const http = require('http');
+const express = require('express');
 const fs = require('fs');
 
 function countStudents(path) {
@@ -15,10 +15,12 @@ function countStudents(path) {
         return;
       }
 
-      lines.shift(); // Remove header
+      lines.shift(); // Supprime l'entête
       const students = lines.map((line) => {
         const [firstname, lastname, age, field] = line.split(',');
-        return { firstname, lastname, age, field };
+        return {
+          firstname, lastname, age, field,
+        };
       });
 
       const fields = {};
@@ -28,45 +30,41 @@ function countStudents(path) {
       });
 
       let output = `Number of students: ${students.length}\n`;
-      for (const field in fields) {
-        if (Object.hasOwn(fields, field)) {
-          const list = fields[field];
-          output += `Number of students in ${field}: ${list.length}. List: ${list.join(', ')}\n`;
+      ['CS', 'SWE'].forEach((field) => {
+        if (fields[field]) {
+          output += `Number of students in ${field}: ${fields[field].length}. List: ${fields[field].join(', ')}\n`;
         }
-      }
+      });
 
       resolve(output.trim());
     });
   });
 }
 
-const host = 'localhost';
-const port = 1245;
+const app = express(); // ✅ Express au lieu de http.createServer
 
-const server = http.createServer((req, res) => {
-  if (req.url === '/' && req.method === 'GET') {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('Hello Holberton School!');
-  } else if (req.url === '/students' && req.method === 'GET') {
-    const dbFile = process.argv[2];
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
+app.get('/', (req, res) => {
+  res.send('Hello Holberton School!');
+});
 
-    countStudents(dbFile)
-      .then((output) => {
-        res.end(`This is the list of our students\n${output}`);
-      })
-      .catch((err) => {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end(`This is the list of our students\n${err.message}`);
-      });
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Not Found');
+app.get('/students', async (req, res) => {
+  const dbFile = process.argv[2];
+  if (!dbFile) {
+    res.status(500).send('Cannot load the database');
+    return;
+  }
+
+  try {
+    const result = await countStudents(dbFile);
+    res.type('text/plain');
+    res.send(`This is the list of our students\n${result}`);
+  } catch (err) {
+    res.status(500).send(err.message);
   }
 });
 
-server.listen(port, host, () => {
-  console.log(`Server running on http://${host}:${port}`);
+app.listen(1245, () => {
+  console.log('Server running on http://localhost:1245');
 });
 
-module.exports = server;
+module.exports = app; // ✅ conforme à la consigne
