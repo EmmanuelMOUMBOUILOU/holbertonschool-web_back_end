@@ -1,18 +1,15 @@
 process.stdout.write('Welcome to Holberton School, what is your name?\n');
 
-process.stdin.setEncoding('utf8');
-
-// Activer stdin (utile pour certains environnements)
-process.stdin.resume();
-
 process.stdin.on('data', (data) => {
-  const name = data.trim();
-
-  // ATTENTION : utiliser \n (pas \r !) pour que le test détecte la ligne
+  const name = data.toString().trim();
   console.log(`Your name is: ${name}`);
+
+  // Fermer le stdin si l'entrée vient d'un pipe
+  if (!process.stdin.isTTY) process.exit();
+
+  // Sinon, demander à l'utilisateur de fermer manuellement (Ctrl+D)
 });
 
-// Ce message doit apparaître quand le flux se termine (EOF, comme avec echo)
-process.stdin.on('end', () => {
+process.on('exit', () => {
   console.log('This important software is now closing');
 });
