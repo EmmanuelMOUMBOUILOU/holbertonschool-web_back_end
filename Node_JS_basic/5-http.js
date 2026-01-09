@@ -14,13 +14,13 @@ const app = http.createServer((req, res) => {
     const database = process.argv[2];
 
     if (!database) {
-      res.end('Cannot load the database');
+      res.end('Cannot load the database\n');
       return;
     }
 
     fs.readFile(database, 'utf-8', (err, data) => {
       if (err) {
-        res.end('Cannot load the database');
+        res.end('Cannot load the database\n');
         return;
       }
 
